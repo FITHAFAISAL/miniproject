@@ -1,0 +1,46 @@
+{% extends "admin/base_template.html" %}
+
+{% block page_title %}Hospital Verification{% endblock %}
+
+{% block content %}
+<div class="hospital-verification">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>User</th>
+                <th>Hospital ID</th>
+                <th>Status</th>
+                <th>Submitted Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for verification in verifications %}
+            <tr>
+                <td>{{ verification.user.username }}</td>
+                <td>{{ verification.user.hospital_id }}</td>
+                <td>
+                    {% if verification.verification_status == 'pending' %}
+                        <span class="badge badge-warning">Pending</span>
+                    {% elif verification.verification_status == 'approved' %}
+                        <span class="badge badge-success">Approved</span>
+                    {% else %}
+                        <span class="badge badge-danger">Rejected</span>
+                    {% endif %}
+                </td>
+                <td>{{ verification.created_at }}</td>
+                <td>
+                    <a href="{% url 'approve_hospital_verification' verification.id %}" class="btn btn-sm btn-success">
+                        {% if verification.verification_status == 'pending' %}
+                            Review
+                        {% else %}
+                            View Details
+                        {% endif %}
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
