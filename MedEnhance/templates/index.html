@@ -1,0 +1,214 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Image Enhancement - Home</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: #E3F2FD;
+            color: #37474F;
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: #ECEFF1;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo img {
+            height: 50px;
+            margin-right: 1rem;
+        }
+        
+        .logo h1 {
+            font-size: 1.5rem;
+            color: #37474F;
+        }
+        
+        nav {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        nav a {
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            background-color: #90CAF9;
+            color: #37474F;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        nav a:hover {
+            background-color: #80CBC4;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        
+        .hero {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .hero-text {
+            flex: 1;
+        }
+        
+        .hero-image {
+            flex: 1;
+        }
+        
+        .hero-image img {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        h1, h2, h3 {
+            margin-bottom: 1rem;
+            color: #37474F;
+        }
+        
+        p {
+            margin-bottom: 1.5rem;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .feature {
+            background-color: #ECEFF1;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: #80CBC4;
+            color: #37474F;
+            padding: 0.7rem 1.5rem;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            background-color: #4DB6AC;
+            transform: translateY(-2px);
+        }
+        
+        footer {
+            background-color: #ECEFF1;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="{% static 'Images\logo.png'  %}" alt="Medical Enhance Logo">
+            <h1>MedEnhance</h1>
+        </div>
+        <nav id="nav-links">
+            <a href="{% url 'index' %}">Home</a>
+            <a href="{% url 'login' %}">Login</a>
+            <a href="{% url 'login' %}">Sign Up</a>
+        </nav>
+    </header>
+    
+    <div class="container">
+        <section class="hero">
+            <div class="hero-text">
+                <h1>Advanced Medical Image Enhancement</h1>
+                <p>Our state-of-the-art AI technology enhances medical images to improve diagnostic accuracy and clarity. With our platform, healthcare professionals can access clearer, more detailed images that reveal critical diagnostic information.</p>
+                <a href="{% url 'login' %}" class="btn">Get Started</a>
+            </div>
+            <div class="hero-image">
+                <img src="{% static 'images\homeMain.jpeg' %}" alt="Medical Image Enhancement Example">
+            </div>
+        </section>
+        
+        <section>
+            <h2>About Our Technology</h2>
+            <p>MedEnhance uses advanced deep learning algorithms specifically trained on medical imaging data to enhance various types of medical images. Our technology helps medical professionals see more details, identify anomalies more easily, and make more accurate diagnoses.</p>
+            <p>The enhancement process preserves the integrity of the original diagnostic information while improving clarity, contrast, and detail visibility. This results in images that are not only easier to interpret but can reveal subtle details that might be missed in the original images.</p>
+        </section>
+        
+        <section class="features">
+            <div class="feature">
+                <h3>Enhanced Clarity</h3>
+                <p>Improve contrast and sharpness of medical images to reveal more details and make diagnosis easier.</p>
+            </div>
+            <div class="feature">
+                <h3>Noise Reduction</h3>
+                <p>Advanced algorithms reduce image noise while preserving important diagnostic details.</p>
+            </div>
+            <div class="feature">
+                <h3>Explainable AI</h3>
+                <p>Understand how our AI enhances images with detailed explanations of the enhancement process.</p>
+            </div>
+        </section>
+    </div>
+    
+    <footer>
+        <!--<p>&copy; 2025 MedEnhance. All rights reserved.</p>-->
+    </footer>
+
+    <script>
+        // Check if user is logged in
+        document.addEventListener('DOMContentLoaded', function() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            const navLinks = document.getElementById('nav-links');
+            
+            if (isLoggedIn === 'true') {
+                // User is logged in
+                navLinks.innerHTML = `
+                    <a href="index.html">Home</a>
+                    <a href="{% url 'login' %}">Login</a>
+                    <a href="{% url 'login' %}">Sign Up</a>
+                    
+                `;
+                
+                // Add logout functionality
+                document.getElementById('logout-btn').addEventListener('click', function() {
+                    localStorage.removeItem('isLoggedIn');
+                    localStorage.removeItem('userType');
+                    window.location.href = 'index.html';
+                });
+            }
+        });
+    </script>
+</body>
+</html>

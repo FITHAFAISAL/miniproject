@@ -1,0 +1,306 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Image Enhancement - Login/Signup</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: #E3F2FD;
+            color: #37474F;
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: #ECEFF1;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo img {
+            height: 50px;
+            margin-right: 1rem;
+        }
+        
+        .logo h1 {
+            font-size: 1.5rem;
+            color: #37474F;
+        }
+        
+        nav {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        nav a {
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            background-color: #90CAF9;
+            color: #37474F;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        nav a:hover {
+            background-color: #80CBC4;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .auth-container {
+            flex: 1;
+            background-color: #ECEFF1;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        h1, h2, h3 {
+            margin-bottom: 1rem;
+            color: #37474F;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #90CAF9;
+        }
+        
+        .tab {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+        }
+        
+        .tab.active {
+            border-bottom: 2px solid #80CBC4;
+            font-weight: bold;
+        }
+        
+        .form-container {
+            display: none;
+        }
+        
+        .form-container.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        
+        input {
+            width: 100%;
+            padding: 0.7rem;
+            border: 1px solid #90CAF9;
+            border-radius: 4px;
+            background-color: #fff;
+        }
+        
+        .user-type {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .user-type label {
+            display: flex;
+            align-items: center;
+            font-weight: normal;
+            cursor: pointer;
+        }
+        
+        .user-type input {
+            width: auto;
+            margin-right: 0.5rem;
+        }
+        
+        button {
+            background-color: #80CBC4;
+            color: #37474F;
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            background-color: #4DB6AC;
+        }
+        
+        footer {
+            background-color: #ECEFF1;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="{% static 'Images\logo.png'  %}" alt="Medical Enhance Logo">
+            <h1>MedEnhance</h1>
+        </div>
+        <nav>
+            <a href="{% url 'index' %}">Home</a>
+            <a href="{% url 'login' %}">Login</a>
+            <a href="{% url 'login' %}">Sign Up</a>
+        </nav>
+    </header>
+    
+    <div class="container">
+        <div class="auth-container">
+            <div class="tabs">
+                <div class="tab active" id="login-tab">Login</div>
+                <div class="tab" id="signup-tab">Sign Up</div>
+            </div>
+            
+            <div class="form-container active" id="login-form">
+                <h2>Login to Your Account</h2>
+                <form id="login">
+                    <div class="user-type">
+                        <label>
+                            <input type="radio" name="userType" value="user" checked> User
+                        </label>
+                        <label>
+                            <input type="radio" name="userType" value="admin"> Admin
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-email">Email</label>
+                        <input type="email" id="login-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" required>
+                    </div>
+                    <button type="submit">Login</button>
+                </form>
+            </div>
+            
+            <div class="form-container" id="signup-form">
+                <h2>Create New Account</h2>
+                <form id="signup">
+                    <div class="user-type">
+                        <label>
+                            <input type="radio" name="userType" value="user" checked> User
+                        </label>
+                        <label>
+                            <input type="radio" name="userType" value="admin"> Admin
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-name">Full Name</label>
+                        <input type="text" id="signup-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-email">Email</label>
+                        <input type="email" id="signup-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-password">Password</label>
+                        <input type="password" id="signup-password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-confirm">Confirm Password</label>
+                        <input type="password" id="signup-confirm" required>
+                    </div>
+                    <button type="submit">Sign Up</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <!--<p>&copy; 2025 MedEnhance. All rights reserved.</p>-->
+    </footer>
+
+    <script>
+        // Tab switching functionality
+        document.getElementById('login-tab').addEventListener('click', function() {
+            document.getElementById('login-tab').classList.add('active');
+            document.getElementById('signup-tab').classList.remove('active');
+            document.getElementById('login-form').classList.add('active');
+            document.getElementById('signup-form').classList.remove('active');
+        });
+        
+        document.getElementById('signup-tab').addEventListener('click', function() {
+            document.getElementById('signup-tab').classList.add('active');
+            document.getElementById('login-tab').classList.remove('active');
+            document.getElementById('signup-form').classList.add('active');
+            document.getElementById('login-form').classList.remove('active');
+        });
+        
+        // Form submissions
+        document.getElementById('signup').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('signup-name').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            const confirm = document.getElementById('signup-confirm').value;
+            const userType = document.querySelector('input[name="userType"]:checked').value;
+            
+            if (password !== confirm) {
+                alert('Passwords do not match!');
+                return;
+            }
+            
+            // In a real application, this data would be sent to a server
+            // For now, we'll just show a success message and redirect to login
+            alert('Account created successfully! Please log in.');
+            
+            // Switch to login tab
+            document.getElementById('login-tab').click();
+        });
+        
+        document.getElementById('login').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const userType = document.querySelector('input[name="userType"]:checked').value;
+            
+            // In a real application, this would be authenticated against a server
+            // For now, we'll just set a flag in localStorage and redirect
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('userType', userType);
+            
+            // Redirect to upload page
+            window.location.href = "/upload/";
+        });
+    </script>
+</body>
+</html>

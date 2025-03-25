@@ -1,0 +1,385 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediScan - Enhanced Image Results</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #E3F2FD;
+            color: #37474F;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 15px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        h1, h2, h3 {
+            margin-bottom: 1rem;
+            color: #37474F;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            width: 150px;
+            height: 50px;
+            margin-right: 10px;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: #37474F;
+        }.logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo img {
+            height: 50px;
+            margin-right: 1rem;
+        }
+        
+        .logo h1 {
+            font-size: 1.5rem;
+            color: #37474F;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-btn {
+            text-decoration: none;
+            color: #37474F;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background-color: #90CAF9;
+            color: white;
+        }
+
+        .primary-btn {
+            background-color: #80CBC4;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .primary-btn:hover {
+            background-color: #5f9ea0;
+            transform: translateY(-2px);
+        }
+
+        main {
+            flex: 1;
+            padding: 40px 50px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .result-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #37474F;
+            margin-bottom: 20px;
+        }
+
+        .image-comparison {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .image-card {
+            flex: 1;
+            min-width: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .image-title {
+            font-size: 18px;
+            font-weight: 500;
+            color: #37474F;
+        }
+
+        .image-display {
+            width: 100%;
+            height: 300px;
+            background-color: #ECEFF1;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .image-display img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .secondary-btn {
+            background-color: #ECEFF1;
+            color: #37474F;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .secondary-btn:hover {
+            background-color: #CFD8DC;
+        }
+
+        .explainable-ai {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #37474F;
+            margin-bottom: 15px;
+        }
+
+        .explanation-content {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .explanation-text {
+            flex: 2;
+            min-width: 300px;
+            line-height: 1.6;
+        }
+
+        .metrics-container {
+            flex: 1;
+            min-width: 250px;
+            background-color: #ECEFF1;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .metric-item {
+            margin-bottom: 15px;
+        }
+
+        .metric-title {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .metric-bar {
+            height: 10px;
+            background-color: #E3F2FD;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .metric-fill {
+            height: 100%;
+            background-color: #90CAF9;
+        }
+
+        footer {
+            background-color: #ECEFF1;
+            padding: 20px 50px;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            main {
+                padding: 20px;
+            }
+
+            .image-comparison {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="{% static 'Images\logo.png'  %}" alt="MediScan Logo">
+            <h1>MedEnhance</h1>
+        </div>
+        <nav class="nav-links">
+            <a href="{% url 'index' %}">Home</a>
+            <a href="{% url 'login' %}">Login</a>
+            <a href="{% url 'login' %}">Sign Up</a>
+            <button id="logoutBtn" class="primary-btn">Logout</button>
+        </nav>
+    </header>
+
+    <main>
+        <div class="result-container">
+            <h1 class="page-title">Enhanced Image Results</h1>
+            
+            <div class="image-comparison">
+                <div class="image-card">
+                    <h2 class="image-title">Original Image</h2>
+                    <div class="image-display">
+                        <img src="/api/placeholder/300/300" alt="Original Medical Image">
+                    </div>
+                </div>
+                
+                <div class="image-card">
+                    <h2 class="image-title">Enhanced Image</h2>
+                    <div class="image-display">
+                        <img src="/api/placeholder/300/300" alt="Enhanced Medical Image">
+                    </div>
+                    <div class="action-buttons">
+                        <button class="primary-btn" id="downloadBtn">Download Enhanced Image</button>
+                        <button class="secondary-btn" id="compareBtn">Compare Details</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="explainable-ai">
+                <h2 class="section-title">AI Enhancement Explanation</h2>
+                <div class="explanation-content">
+                    <div class="explanation-text">
+                        <p>Our advanced AI algorithm has successfully enhanced this medical image by improving contrast, reducing noise, and sharpening key diagnostic features. The enhancement process utilized a specialized convolutional neural network trained on thousands of similar medical images.</p>
+                        <p>The algorithm identified areas of potential diagnostic significance and selectively enhanced those regions while preserving the overall image integrity. This process helps medical professionals identify subtle features that might be difficult to detect in the original image.</p>
+                        <p>Key improvements include a 45% increase in edge definition around tissue boundaries, 30% reduction in background noise, and 25% improvement in contrast for soft tissue differentiation. These enhancements are particularly valuable for detecting early-stage abnormalities and subtle pathological changes.</p>
+                    </div>
+                    <div class="metrics-container">
+                        <h3 class="metric-title">Enhancement Metrics</h3>
+                        <div class="metric-item">
+                            <div class="metric-title">Noise Reduction</div>
+                            <div class="metric-bar">
+                                <div class="metric-fill" style="width: 75%"></div>
+                            </div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-title">Contrast Improvement</div>
+                            <div class="metric-bar">
+                                <div class="metric-fill" style="width: 85%"></div>
+                            </div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-title">Edge Definition</div>
+                            <div class="metric-bar">
+                                <div class="metric-fill" style="width: 90%"></div>
+                            </div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-title">Detail Preservation</div>
+                            <div class="metric-bar">
+                                <div class="metric-fill" style="width: 95%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 MediScan - Medical Image Enhancement System</p>
+    </footer>
+
+    <script>
+        // Check if user is logged in
+        document.addEventListener('DOMContentLoaded', function() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            const logoutBtn = document.getElementById('logoutBtn');
+            
+            if (!isLoggedIn) {
+                window.location.href = 'login.html';
+            }
+            
+            logoutBtn.addEventListener('click', function() {
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('username');
+                window.location.href = 'login.html';
+            });
+            
+            // Download button functionality
+            const downloadBtn = document.getElementById('downloadBtn');
+            downloadBtn.addEventListener('click', function() {
+                alert('Enhanced image download started!');
+                // In a real implementation, this would trigger the actual download
+                // For example: window.location.href = 'download.php?file=enhanced_image.jpg';
+            });
+            
+            // Compare button functionality
+            const compareBtn = document.getElementById('compareBtn');
+            compareBtn.addEventListener('click', function() {
+                alert('Detailed comparison view would open here');
+                // This would typically open a modal or navigate to a detailed comparison page
+            });
+        });
+    </script>
+</body>
+</html>
