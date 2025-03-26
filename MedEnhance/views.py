@@ -129,7 +129,7 @@ def results(request):
 
 def upload(request):
     return render(request, "upload.html")
-
+"""
 def generate_otp():
     return ''.join([str(random.randint(0, 9)) for _ in range(6)])
 
@@ -215,7 +215,91 @@ def custom_login(request):
         else:
             messages.error(request, 'Invalid login credentials.')
     
+    return render(request, 'login.html')"""
+
+# Function to generate a 6-digit OTP
+def generate_otp():
+    return ''.join([str(random.randint(0, 9)) for _ in range(6)])
+
+# Function to send OTP via email
+def send_verification_email(user, otp):
+    send_mail(
+        'Verify Your Email',
+        f'Your verification OTP is: {otp}',
+        'noreply@yourdomain.com',  # Update with your domain email
+        [user.email],
+        fail_silently=False,
+    )
+
+# User Signup with OTP Email Verification
+def user_signup(request):
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.is_active = False  # Deactivate account until email is verified
+            user.user_type = request.POST.get('user_type', 'user')  # Default to 'user'
+            user.save()
+
+            # Generate and send OTP
+            otp = generate_otp()
+            OTPVerification.objects.create(user=user, otp=otp)
+            send_verification_email(user, otp)
+
+            request.session['email'] = user.email  # Store email in session
+            messages.success(request, 'OTP sent! Please check your email.')
+            return redirect('verify_otp')  # Redirect to OTP verification page
+    else:
+        form = CustomUserCreationForm()
+    
+    return render(request, 'signup.html', {'form': form})
+
+# OTP Verification View
+def verify_otp(request):
+    if request.method == 'POST':
+        otp = request.POST.get('otp')
+        email = request.session.get('email')
+
+        if not email:
+            messages.error(request, 'Session expired! Please sign up again.')
+            return redirect('signup')
+
+        try:
+            user = CustomUser.objects.get(email=email)
+            otp_record = OTPVerification.objects.get(user=user, otp=otp)
+
+            user.is_active = True
+            user.save()
+            otp_record.delete()  # Remove OTP record after verification
+
+            messages.success(request, 'Email verified successfully! Please log in.')
+            return redirect('login')
+        except (CustomUser.DoesNotExist, OTPVerification.DoesNotExist):
+            messages.error(request, 'Invalid OTP. Please try again.')
+
+    return render(request, 'verify_otp.html')
+
+# Custom Login with Role-Based Redirect
+def custom_login(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+
+            # Redirect based on user role
+            if user.user_type == 'admin':
+                return redirect('admin_dashboard')
+            else:
+                return redirect('upload')  # Redirect regular users to upload.html
+        else:
+            messages.error(request, 'Invalid login credentials.')
+    
     return render(request, 'login.html')
+
 from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView
 from django.urls import reverse, reverse_lazy
 

@@ -136,6 +136,24 @@
             color: #37474F;
             text-decoration: none;
         }
+        
+        nav {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        nav a {
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            background-color: #90CAF9;
+            color: #37474F;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        nav a:hover {
+            background-color: #80CBC4;
+        }
     </style>
 </head>
 <body>
@@ -144,6 +162,12 @@
             <img src="{% static 'Images/logo.png' %}" alt="Medical Enhance Logo">
             <h1>MedEnhance</h1>
         </div>
+        <nav id="nav-links">
+            <a href="{% url 'index' %}">Home</a>
+            <a href="{% url 'login' %}">Login</a>
+            <a href="{% url 'signup' %}">Sign Up</a>
+        </nav>
+    
     </header>
     
     <div class="container">
