@@ -1,4 +1,4 @@
-{% load static %}
+<!-- {% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -265,6 +265,23 @@
                 flex-direction: column;
             }
         }
+        nav {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        nav a {
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            background-color: #90CAF9;
+            color: #37474F;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        nav a:hover {
+            background-color: #80CBC4;
+        }
     </style>
 </head>
 <body>
@@ -275,8 +292,8 @@
         </div>
         <nav class="nav-links">
             <a href="{% url 'index' %}">Home</a>
-            <a href="{% url 'login' %}">Login</a>
-            <a href="{% url 'login' %}">Sign Up</a>
+            <!-- <a href="{% url 'login' %}">Login</a>
+            <a href="{% url 'login' %}">Sign Up</a> --><!--Look Here
             <button id="logoutBtn" class="primary-btn">Logout</button>
         </nav>
     </header>
@@ -289,8 +306,7 @@
                 <div class="image-card">
                     <h2 class="image-title">Original Image</h2>
                     <div class="image-display">
-                        <img src="/api/placeholder/300/300" alt="Original Medical Image">
-                    </div>
+                        <img src="{{ image.image.url }}" alt="Uploaded Image">                    </div>
                 </div>
                 
                 <div class="image-card">
@@ -348,7 +364,7 @@
     <footer>
         <p>&copy; 2025 MediScan - Medical Image Enhancement System</p>
     </footer>
-
+<!-- 
     <script>
         // Check if user is logged in
         document.addEventListener('DOMContentLoaded', function() {
@@ -380,6 +396,264 @@
                 // This would typically open a modal or navigate to a detailed comparison page
             });
         });
-    </script>
+    </script> --><!-- Look Here
+</body>
+</html> -->
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediScan - Enhanced Image Results</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #E3F2FD;
+            color: #37474F;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 15px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 50px;
+            margin-right: 10px;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            color: #37474F;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-btn {
+            text-decoration: none;
+            color: #37474F;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background-color: #90CAF9;
+            color: white;
+        }
+
+        .primary-btn {
+            background-color: #80CBC4;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .primary-btn:hover {
+            background-color: #5f9ea0;
+            transform: translateY(-2px);
+        }
+
+        main {
+            flex: 1;
+            padding: 40px 50px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .result-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #37474F;
+            margin-bottom: 20px;
+        }
+
+        .image-comparison {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .image-card {
+            flex: 1;
+            min-width: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .image-title {
+            font-size: 18px;
+            font-weight: 500;
+            color: #37474F;
+        }
+
+        .image-display {
+            width: 100%;
+            height: 300px;
+            background-color: #ECEFF1;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .image-display img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .secondary-btn {
+            background-color: #ECEFF1;
+            color: #37474F;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .secondary-btn:hover {
+            background-color: #CFD8DC;
+        }
+
+        .explainable-ai {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #37474F;
+            margin-bottom: 15px;
+        }
+
+        footer {
+            background-color: #ECEFF1;
+            padding: 20px 50px;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            main {
+                padding: 20px;
+            }
+
+            .image-comparison {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="{% static 'Images/logo.png' %}" alt="MediScan Logo">
+            <h1>MedEnhance</h1>
+        </div>
+        <nav class="nav-links">
+            <a href="{% url 'index' %}" class="nav-btn">Home</a>
+            <a href="{% url 'logout' %}" class="primary-btn">Logout</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="result-container">
+            <h1 class="page-title">Enhanced Image Results</h1>
+            
+            <div class="image-comparison">
+                <div class="image-card">
+                    <h2 class="image-title">Original Image</h2>
+                    <div class="image-display">
+                        <!-- <img src="{{ 'venv/SubFolder/miniproject/InputImages/InputImage' }}" alt="Uploaded Image"> -->
+                        <img src="/input-images/InputImage.png" alt="Uploaded Image">
+                    </div>
+                </div>
+                
+                <div class="image-card">
+                    <h2 class="image-title">Enhanced Image</h2>
+                    <div class="image-display">
+                        <img src="/output-images/OutputImage.png" alt="Enhanced Medical Image">
+                    </div>
+                    <div class="action-buttons">
+                        <a href="/output-images/OutputImage.png" download class="primary-btn">Download Enhanced Image</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="explainable-ai">
+                <h2 class="section-title">AI Enhancement Explanation</h2>
+                <p>The AI model has improved image contrast, reduced noise, and enhanced diagnostic features.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <!-- <p>&copy; 2025 MediScan - Medical Image Enhancement System</p> -->
+    </footer>
 </body>
 </html>

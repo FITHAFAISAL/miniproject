@@ -31,4 +31,16 @@ class HospitalVerification(models.Model):
     verified_by = models.ForeignKey(CustomUser, related_name='verified_users', 
                                     null=True, blank=True, on_delete=models.SET_NULL)
     
-    
+from django.db import models
+
+class UploadedImage(models.Model):
+    image = models.ImageField(upload_to='uploads/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.image.name
+
+    def image_url(self):
+        if self.image:
+            return self.image.url
+        return ""

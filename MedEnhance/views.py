@@ -111,7 +111,7 @@ def verify_hospital_id(request, verification_id):
 
     return render(request, 'verify_hospital_id.html', {'verification': verification})
 """
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth import login, authenticate
 from django.contrib import messages
 from django.core.mail import send_mail
@@ -119,15 +119,32 @@ from django.utils.crypto import get_random_string
 from .models import CustomUser, OTPVerification
 from .forms import CustomUserCreationForm
 import random
+from PIL import Image
+import os
+import shutil
+from .gan_model import process_with_gan
+
+from django.conf import settings
+MODEL_PATH = os.path.join(settings.BASE_DIR, 'models', 'net_g_latest.pth')
+
+
 def index(request):
     return render(request, "index.html")
 def login(request):
     return render(request, "login.html")
 
-def results(request):
+'''def results(request):
     return render(request, "results.html")
+'''
+
+def results(request):
+    """Display the processed image."""
+    output_image_url = "/OutputImages/OutputImage.png"  # Static path for serving output
+    return render(request, "results.html", {"output_image_url": output_image_url})
 
 def upload(request):
+    # return HttpResponse("Hello")
+    print(request.user)
     return render(request, "upload.html")
 
 def generate_otp():
@@ -156,12 +173,12 @@ def user_signup(request):
             user.save()
 
             # Generate and send OTP
-            otp = generate_otp()
-            OTPVerification.objects.create(user=user, otp=otp)
-            send_verification_email(user, otp)
+            # otp = generate_otp()
+            # OTPVerification.objects.create(user=user, otp=otp)
+            # send_verification_email(user, otp)
 
             messages.success(request, 'Account created. Please verify your email.')
-            return redirect('verify_otp')
+            return redirect('upload_image')
     else:
         form = CustomUserCreationForm()
     
@@ -216,6 +233,47 @@ def custom_login(request):
             messages.error(request, 'Invalid login credentials.')
     
     return render(request, 'login.html')
+
+from django.shortcuts import render, redirect
+from django.conf import settings
+from django.core.files.storage import FileSystemStorage
+from .models import UploadedImage  # Assuming you have a model to store uploaded image info
+
+from django.core.files.storage import FileSystemStorage
+from django.shortcuts import render, redirect
+from django.conf import settings
+from .models import UploadedImage
+
+def upload_image(request):
+    if request.method == 'POST' and request.FILES.get('image'):
+        image = request.FILES['image']
+
+        
+        # Use MEDIA_ROOT as storage location
+        fs = FileSystemStorage(location=settings.MEDIA_ROOT)
+        filename = fs.save(image.name, image)  # No need to manually add "uploads/"
+        
+        # Get the URL to access the uploaded image
+        uploaded_image_url = fs.url(filename)
+        
+        # Save the image path in the database
+        new_image = UploadedImage(image=f"media/{filename}")  # Update this based on your model field
+        new_image.save()
+
+
+        input_path = os.path.join(settings.INPUT_IMAGE_DIR, 'InputImage.png')
+        with open(input_path, 'wb+') as destination:
+            for chunk in image.chunks():
+                destination.write(chunk)
+
+        # Process the image using GAN model
+        output_path = process_with_gan()
+
+        return redirect('results')  # Ensure 'results' is a valid URL name
+
+    return render(request, 'upload.html')
+ # Render the upload page again if it's a GET request
+
 from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView
 from django.urls import reverse, reverse_lazy
 

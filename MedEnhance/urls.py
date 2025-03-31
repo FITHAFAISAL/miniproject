@@ -10,11 +10,17 @@ urlpatterns = [
     path('upload/', views.upload, name='upload'),
 ]
 """
-from django.urls import path
+from django.urls import path, re_path
 from django.contrib.auth import views as auth_views
 from . import views
+import os
 from django.views.generic import TemplateView
-from .views import  CustomPasswordResetConfirmView, CustomPasswordResetView
+from .views import  CustomPasswordResetConfirmView, CustomPasswordResetView, results
+from django.views.static import serve
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+INPUT_IMAGE_DIR = os.path.join(BASE_DIR, 'InputImages')
+OUTPUT_IMAGE_DIR = os.path.join(BASE_DIR, 'OutputImages')
 
 urlpatterns = [
     path('', views.index, name='home'),
@@ -24,17 +30,19 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
     path('results/', views.results, name='results'),
-    path('upload/', views.upload, name='upload'),
+    #path('upload/', views.upload, name='upload'),
     #path('signup/', views.login, name='login'),
     path('password_reset/done/', TemplateView.as_view(template_name='password_reset_done.html'), name='password_reset_done'),
     path('reset/done/', TemplateView.as_view(template_name='password_reset_complete.html'), name='password_reset_complete'),
     path('password_reset/', CustomPasswordResetView.as_view(), name='password_reset'),
     path('password_reset_confirm/<uidb64>/<token>/', CustomPasswordResetConfirmView.as_view(), name='password_reset_confirm'),
-
-
+     path('upload/', views.upload_image, name='upload_image'),
+     path('results/<int:image_id>/', results, name='results'),
     #Admin Dashboard
     #path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),
     #path('verify-hospital-id/<int:verification_id>/', views.verify_hospital_id, name='verify_hospital_id'),
+    re_path(r'^input-images/(?P<path>.*)$', serve, {'document_root': INPUT_IMAGE_DIR}),
+    re_path(r'^output-images/(?P<path>.*)$', serve, {'document_root': OUTPUT_IMAGE_DIR}),
 ]
 
 """ # Forgot Password URLs

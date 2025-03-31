@@ -1,4 +1,4 @@
-{% load static %}
+<!--{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Medical Image Enhancement - Upload</title>
     <style>
+        /* (Your existing CSS here) */
         * {
             margin: 0;
             padding: 0;
@@ -189,163 +190,302 @@
 <body>
     <header>
         <div class="logo">
-            <img src="{% static 'Images\logo.png'  %}" alt="Medical Enhance Logo">
+            <img src="{% static 'Images/logo.png' %}" alt="Medical Enhance Logo">
             <h1>MedEnhance</h1>
         </div>
         <nav id="nav-links">
             <a href="{% url 'index' %}">Home</a>
-            <a href="{% url 'login' %}">Login</a>
-            <a href="{% url 'login' %}">Sign Up</a>
+            <!-- <a href="{% url 'login' %}">Login</a>
+            <a href="{% url 'login' %}">Sign Up</a> --><!--- Look Here
             <a href="#" id="logout-btn">Logout</a>
         </nav>
     </header>
     
     <div class="container">
         <h1>Upload Medical Image</h1>
-        <p>Upload your medical image for enhancement. <!--We support various medical imaging formats including X-rays, MRIs, CT scans, and ultrasounds.--></p>
+        <p>Upload your medical image for enhancement.</p>
         
         <div class="upload-container">
-            <div id="upload-area" class="upload-area">
-                <div class="upload-icon">
-                    <!-- Upload icon using CSS -->
-                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#90CAF9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                        <polyline points="17 8 12 3 7 8"></polyline>
-                        <line x1="12" y1="3" x2="12" y2="15"></line>
-                    </svg>
+            <form method="POST" enctype="multipart/form-data" action="{% url 'upload_image' %}">
+                {% csrf_token %}
+                <div id="upload-area" class="upload-area">
+                    <div class="upload-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#90CAF9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                    </div>
+                    <!-- <h3>Drag & Drop your image here</h3> --><!-- Look Here
+                    <p>or</p>
+                    <div class="upload-options">
+                        <label for="file-input" class="btn">Choose File</label>
+
+                        <input type="file" name="image" id="file-input" accept="image/*" required>
+                    </div>
                 </div>
-                <h3>Drag & Drop your image here</h3>
-                <p>or</p>
+
+                <div id="image-preview" class="image-preview">
+                    <!-- <h3>Image Preview</h3> -->
+                    <!-- Image preview will be shown by the server --><!-- Look Here
+                </div>
+
                 <div class="upload-options">
-                    <button class="btn" id="select-file-btn">Select from computer</button>
+                    <button type="submit" class="btn">Process Image</button>
                 </div>
-                <input type="file" id="file-input" accept="image/*">
-                <!--<p class="small">Supported formats: JPG, PNG, DICOM, TIFF</p>-->
-            </div>
-            
-            <div id="image-preview" class="image-preview">
-                <h3>Image Preview</h3>
-                <img id="preview-img" src="" alt="Image preview">
-                <div class="upload-options" style="margin-top: 1rem;">
-                    <button class="btn" id="process-btn">Process Image</button>
-                    <button class="btn btn-outline" id="change-image-btn">Change Image</button>
-                </div>
-            </div>
-            
-            <div id="loading" class="loading">
-                <div class="loading-spinner"></div>
-                <p>Processing your image. This may take a moment...</p>
-            </div>
+            </form>
         </div>
     </div>
     
     <footer>
-        <!--<p>&copy; 2025 MedEnhance. All rights reserved.</p>-->
+        <!--<p>&copy; 2025 MedEnhance. All rights reserved.</p>--> <!-- Look Here
+    </footer>
+</body>
+</html>
+--> 
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Image Enhancement - Upload</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: #E3F2FD;
+            color: #37474F;
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: #ECEFF1;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo img {
+            height: 50px;
+            margin-right: 1rem;
+        }
+        
+        .logo h1 {
+            font-size: 1.5rem;
+            color: #37474F;
+        }
+        
+        nav {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        nav a {
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            background-color: #90CAF9;
+            color: #37474F;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        nav a:hover {
+            background-color: #80CBC4;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        
+        h1, h2, h3 {
+            margin-bottom: 1rem;
+            color: #37474F;
+            text-align: center;
+        }
+        
+        p {
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .upload-container {
+            background-color: #ECEFF1;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .upload-area {
+            border: 2px dashed #90CAF9;
+            border-radius: 8px;
+            padding: 3rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            background-color: rgba(144, 202, 249, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .upload-area:hover, .upload-area.dragover {
+            background-color: rgba(144, 202, 249, 0.2);
+            border-color: #80CBC4;
+        }
+        
+        .upload-area i {
+            font-size: 3rem;
+            color: #90CAF9;
+            margin-bottom: 1rem;
+        }
+        
+        .upload-options {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: #80CBC4;
+            color: #37474F;
+            padding: 0.7rem 1.5rem;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            background-color: #4DB6AC;
+            transform: translateY(-2px);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid #80CBC4;
+        }
+        
+        .btn-outline:hover {
+            background-color: rgba(128, 203, 196, 0.1);
+        }
+        
+        #file-input {
+            display: none;
+        }
+        
+        .image-preview {
+            max-width: 100%;
+            margin-top: 1.5rem;
+            text-align: center;
+            display: none;
+        }
+        
+        .image-preview img {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        footer {
+            background-color: #ECEFF1;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="{% static 'Images/logo.png' %}" alt="Medical Enhance Logo">
+            <h1>MedEnhance</h1>
+        </div>
+        <nav id="nav-links">
+            <a href="{% url 'index' %}">Home</a>
+            <a href="#" id="logout-btn">Logout</a>
+        </nav>
+    </header>
+    
+    <div class="container">
+        <h1>Upload Medical Image</h1>
+        <p>Upload your medical image for enhancement.</p>
+        
+        <div class="upload-container">
+            <form method="POST" enctype="multipart/form-data" action="{% url 'upload_image' %}">
+                {% csrf_token %}
+                <div id="upload-area" class="upload-area">
+                    <p>Drag & Drop your image here</p>
+                    <p>or</p>
+                    <label for="file-input" class="btn">Choose File</label>
+                    <input type="file" name="image" id="file-input" accept="image/*" required>
+                </div>
+
+                <div id="image-preview" class="image-preview"></div>
+
+                <div class="upload-options">
+                    <button type="submit" class="btn">Process Image</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2025 MedEnhance. All rights reserved.</p>
     </footer>
 
     <script>
-        // Check if user is logged in
-        document.addEventListener('DOMContentLoaded', function() {
-            const isLoggedIn = localStorage.getItem('isLoggedIn');
-            
-            if (isLoggedIn !== 'true') {
-                // Redirect to login page if not logged in
-                window.location.href = 'login.html';
-            }
-            
-            // Set up file upload handling
-            const uploadArea = document.getElementById('upload-area');
-            const fileInput = document.getElementById('file-input');
-            const selectFileBtn = document.getElementById('select-file-btn');
-            const imagePreview = document.getElementById('image-preview');
-            const previewImg = document.getElementById('preview-img');
-            const processBtn = document.getElementById('process-btn');
-            const changeImageBtn = document.getElementById('change-image-btn');
-            const loading = document.getElementById('loading');
-            
-            // Open file dialog when button is clicked
-            selectFileBtn.addEventListener('click', function() {
-                fileInput.click();
-            });
-            
-            // Handle file selection
-            fileInput.addEventListener('change', handleFileSelect);
-            
-            // Setup drag and drop
-            uploadArea.addEventListener('dragover', function(e) {
-                e.preventDefault();
-                uploadArea.classList.add('dragover');
-            });
-            
-            uploadArea.addEventListener('dragleave', function() {
-                uploadArea.classList.remove('dragover');
-            });
-            
-            uploadArea.addEventListener('drop', function(e) {
-                e.preventDefault();
-                uploadArea.classList.remove('dragover');
-                
-                if (e.dataTransfer.files.length) {
-                    handleFiles(e.dataTransfer.files);
-                }
-            });
-            
-            // Process button click
-            processBtn.addEventListener('click', function() {
-                // Show loading spinner
-                imagePreview.style.display = 'none';
-                loading.style.display = 'block';
-                
-                // Simulate processing time
-                setTimeout(function() {
-                    // Store the image in localStorage for the results page
-                    localStorage.setItem('processedImage', previewImg.src);
-                    
-                    // Redirect to results page
-                    window.location.href = '/results/';
-                }, 2000);
-            });
-            
-            // Change image button click
-            changeImageBtn.addEventListener('click', function() {
-                imagePreview.style.display = 'none';
-                uploadArea.style.display = 'block';
-            });
-            
-            // Logout functionality
-            document.getElementById('logout-btn').addEventListener('click', function() {
-                localStorage.removeItem('isLoggedIn');
-                localStorage.removeItem('userType');
-                window.location.href = 'index.html';
-            });
-            
-            function handleFileSelect(e) {
-                handleFiles(this.files);
-            }
-            
-            function handleFiles(files) {
-                if (!files.length) return;
-                
-                const file = files[0];
-                
-                // Check if file is an image
-                if (!file.type.match('image.*')) {
-                    alert('Please select an image file.');
-                    return;
-                }
-                
-                const reader = new FileReader();
-                
-                reader.onload = function(e) {
-                    // Display image preview
-                    previewImg.src = e.target.result;
-                    uploadArea.style.display = 'none';
-                    imagePreview.style.display = 'block';
-                };
-                
-                reader.readAsDataURL(file);
-            }
-        });
+    document.getElementById('file-input').addEventListener('change', function(event) {
+        let file = event.target.files[0];
+        if (file) {
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                let previewDiv = document.getElementById('image-preview');
+                previewDiv.innerHTML = `<img src="${e.target.result}" alt="Image Preview">`;
+                previewDiv.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    let dropArea = document.getElementById('upload-area');
+
+    dropArea.addEventListener('dragover', function(event) {
+        event.preventDefault();
+        dropArea.classList.add('dragover');
+    });
+
+    dropArea.addEventListener('dragleave', function() {
+        dropArea.classList.remove('dragover');
+    });
+
+    dropArea.addEventListener('drop', function(event) {
+        event.preventDefault();
+        dropArea.classList.remove('dragover');
+        let fileInput = document.getElementById('file-input');
+        fileInput.files = event.dataTransfer.files;
+        fileInput.dispatchEvent(new Event('change'));
+    });
     </script>
+
 </body>
 </html>
