@@ -150,7 +150,7 @@ LOGOUT_REDIRECT_URL = '/login/'
 
 # Email configuration for OTP
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'your_smtp_host'
+EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'enhancementmed@gmail.com'

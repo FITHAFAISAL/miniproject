@@ -422,7 +422,7 @@
         </div>
         <nav id="nav-links">
             <a href="{% url 'index' %}">Home</a>
-            <a href="#" id="logout-btn">Logout</a>
+            <a href="{% url 'logout' %}" id="logout-btn">Logout</a>
         </nav>
     </header>
     
@@ -436,7 +436,7 @@
                 <div id="upload-area" class="upload-area">
                     <p>Drag & Drop your image here</p>
                     <p>or</p>
-                    <label for="file-input" class="btn">Choose File</label>
+                    <button type="submit" class="btn"><label for="file-input" class="btn">Choose File</label></button>
                     <input type="file" name="image" id="file-input" accept="image/*" required>
                 </div>
 

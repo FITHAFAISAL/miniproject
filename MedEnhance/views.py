@@ -1,116 +1,4 @@
-"""from django.shortcuts import render, redirect
-from django.contrib import messages
-from django.core.mail import send_mail
-import random
 
-from .forms import CustomUserCreationForm
-from .models import OTPVerification, HospitalVerification
-from django.contrib.auth.decorators import login_required
-
-# Create your views here.
-def index(request):
-    return render(request, "index.html")
-
-def login(request):
-    return render(request, "login.html")
-
-def results(request):
-    return render(request, "results.html")
-
-def upload(request):
-    return render(request, "upload.html")
-
-def generate_otp():
-    return ''.join([str(random.randint(0, 9)) for _ in range(6)])
-
-def send_otp_email(user, otp):
-    send_mail(
-        'Your OTP for Email Verification',
-        f'Your OTP is: {otp}',
-        'your_email@example.com',  # Replace with your actual email
-        [user.email],
-        fail_silently=False,
-    )
-
-def user_signup(request):
-    if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.is_active = False  # Deactivate account until verified
-            user.save()
-
-            # Generate and send OTP
-            otp = generate_otp()
-            OTPVerification.objects.create(user=user, otp=otp)
-            send_otp_email(user, otp)
-
-            # Create Hospital Verification entry
-            if user.hospital_id:
-                HospitalVerification.objects.create(user=user)
-
-            messages.success(request, 'Please check your email to verify your account.')
-            return redirect('verify_otp')
-    else:
-        form = CustomUserCreationForm()
-    return render(request, 'login.html', {'form': form})
-
-def verify_otp(request):
-    if request.method == 'POST':
-        otp = request.POST.get('otp')
-        try:
-            otp_verification = OTPVerification.objects.get(otp=otp)
-            user = otp_verification.user
-            user.is_active = True
-            user.is_email_verified = True
-            user.save()
-
-            # Delete OTP record after verification
-            otp_verification.delete()
-
-            messages.success(request, 'Email verified successfully!')
-            return redirect('login')
-        except OTPVerification.DoesNotExist:
-            messages.error(request, 'Invalid OTP. Please try again.')
-    
-    return render(request, 'verify_otp.html')
-
-@login_required
-def admin_dashboard(request):
-    if request.user.user_type != 'admin':
-        return redirect('login')
-
-    pending_verifications = HospitalVerification.objects.filter(verification_status='pending')
-    return render(request, 'admin_dashboard.html', {
-        'pending_verifications': pending_verifications
-    })
-
-@login_required
-def verify_hospital_id(request, verification_id):
-    if request.user.user_type != 'admin':
-        return redirect('login')
-
-    verification = HospitalVerification.objects.get(id=verification_id)
-    
-    if request.method == 'POST':
-        action = request.POST.get('action')
-        notes = request.POST.get('notes', '')
-        
-        if action == 'approve':
-            verification.verification_status = 'approved'
-            verification.user.is_hospital_verified = True
-        else:
-            verification.verification_status = 'rejected'
-        
-        verification.admin_notes = notes
-        verification.verified_by = request.user
-        verification.save()
-        verification.user.save()
-        
-        return redirect('admin_dashboard')
-
-    return render(request, 'verify_hospital_id.html', {'verification': verification})
-"""
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth import login, authenticate
 from django.contrib import messages
@@ -123,6 +11,7 @@ from PIL import Image
 import os
 import shutil
 from .gan_model import process_with_gan
+from .explainable_ai import compute_image_metrics
 
 from django.conf import settings
 MODEL_PATH = os.path.join(settings.BASE_DIR, 'models', 'net_g_latest.pth')
@@ -133,14 +22,18 @@ def index(request):
 def login(request):
     return render(request, "login.html")
 
-'''def results(request):
-    return render(request, "results.html")
-'''
-
 def results(request):
-    """Display the processed image."""
+    """Display the processed image with enhancement metrics."""
     output_image_url = "/OutputImages/OutputImage.png"  # Static path for serving output
-    return render(request, "results.html", {"output_image_url": output_image_url})
+    
+    # Compute enhancement metrics
+    enhancement_metrics = compute_image_metrics()
+    
+    context = {
+        "output_image_url": output_image_url,
+        "metrics": enhancement_metrics
+    }
+    return render(request, "results.html", context)
 
 def upload(request):
     # return HttpResponse("Hello")
@@ -159,50 +52,63 @@ def send_verification_email(user, otp):
         fail_silently=False,
     )
 
-def user_signup(request):
+import random
+from django.shortcuts import render, redirect
+from django.core.mail import send_mail
+from django.contrib import messages
+
+
+def signup_view(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
-            user.is_active = False  # Deactivate account till email is verified
-            
-            # Set user type based on form data
-            user_type = request.POST.get('user_type', 'user')
-            user.user_type = user_type
-            
+            user.is_active = False  # Prevent login before OTP verification
             user.save()
 
-            # Generate and send OTP
-            # otp = generate_otp()
-            # OTPVerification.objects.create(user=user, otp=otp)
-            # send_verification_email(user, otp)
+            # Generate OTP
+            otp = random.randint(100000, 999999)
+            request.session['otp'] = otp
+            request.session['registered_user_id'] = user.id
 
-            messages.success(request, 'Account created. Please verify your email.')
-            return redirect('upload_image')
+            # Send OTP email
+            send_mail(
+                'Your OTP for MedEnhance',
+                f'Your OTP is {otp}',
+                'noreply@medenhance.com',
+                [user.email],
+                fail_silently=False,
+            )
+
+            return redirect('verify_otp')
     else:
-        form = CustomUserCreationForm()
-    
+        form = CustomUserCreationForm()    
     return render(request, 'signup.html', {'form': form})
+from django.contrib.auth import get_user_model
 
 def verify_otp(request):
     if request.method == 'POST':
-        otp = request.POST.get('otp')
-        try:
-            otp_verification = OTPVerification.objects.get(otp=otp)
-            user = otp_verification.user
-            user.is_active = True
-            user.is_email_verified = True
-            user.save()
+        entered_otp = request.POST.get('otp')
+        session_otp = str(request.session.get('otp'))
 
-            # Delete OTP record
-            otp_verification.delete()
+        if entered_otp == session_otp:
+            user_id = request.session.get('registered_user_id')
+            User = get_user_model()
+            try:
+                user = User.objects.get(id=user_id)
+                user.is_active = True
+                user.save()
+                # Clean up session
+                del request.session['otp']
+                del request.session['registered_user_id']
+                return redirect('upload_image')  # redirect to upload.html
+            except User.DoesNotExist:
+                return render(request, 'verify_otp.html', {'error': 'User not found.'})
+        else:
+            return render(request, 'verify_otp.html', {'error': 'Invalid OTP. Try again.'})
 
-            messages.success(request, 'Email verified successfully!')
-            return redirect('login')
-        except OTPVerification.DoesNotExist:
-            messages.error(request, 'Invalid OTP. Please try again.')
-    
     return render(request, 'verify_otp.html')
+
 
 def custom_login(request):
     if request.method == 'POST':
@@ -257,8 +163,8 @@ def upload_image(request):
         uploaded_image_url = fs.url(filename)
         
         # Save the image path in the database
-        new_image = UploadedImage(image=f"media/{filename}")  # Update this based on your model field
-        new_image.save()
+        #new_image = UploadedImage(image=f"media/{filename}")  # Update this based on your model field
+        #new_image.save()
 
 
         input_path = os.path.join(settings.INPUT_IMAGE_DIR, 'InputImage.png')

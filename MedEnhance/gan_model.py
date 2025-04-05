@@ -17,8 +17,8 @@ IMPROVEMENT = {
     "ContrastImprovement": None,
 }
 
-# Defining the ESRGAN model architecture
-def create_esrgan_model(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=23, scale=4):
+# Defining the SRGAN model architecture
+def create_srgan_model(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=23, scale=4):
     model = RRDBNet(
         num_in_ch=num_in_ch,
         num_out_ch=num_out_ch,
@@ -32,7 +32,7 @@ def process_with_gan(input_image_path=INPUT_IMAGE_PATH, output_image_path=OUTPUT
     """Processes an image using the ESRGAN model and saves the output."""
     
     # Load Model
-    model = create_esrgan_model()
+    model = create_srgan_model()
     state_dict = torch.load(MODEL_PATH, map_location=torch.device('cpu'))
 
     # Load the correct model weights

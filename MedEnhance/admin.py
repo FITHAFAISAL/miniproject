@@ -9,4 +9,4 @@ from .models import UploadedImage
 class UploadedImageAdmin(admin.ModelAdmin):
     list_display = ('image', 'uploaded_at')
 
-admin.site.register(UploadedImage, UploadedImageAdmin)
+#admin.site.register(UploadedImage, UploadedImageAdmin)
